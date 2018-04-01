@@ -49,7 +49,7 @@ module.exports = function (env) {
     },
     module: {
       rules: [
-        TASK_CONFIG.javascripts.eslintLoader,
+        //TASK_CONFIG.javascripts.eslintLoader,
         TASK_CONFIG.javascripts.babelLoader
       ].concat(TASK_CONFIG.javascripts.customLoaders)
     }
