@@ -1,6 +1,6 @@
 {
   "name": "Secret-blendid",
-  "version": "0.0.2",
+  "version": "0.1.2",
   "description": "Starter kit based on blendid",
   "license": "MIT",
   "engines": {
@@ -69,9 +69,10 @@
     "require-dir": "1.0.0",
     "stylelint": "^9.2.0",
     "stylelint-order": "^0.8.1",
-    "webpack": "^3.11.0",
-    "webpack-dev-middleware": "^2.0.6",
-    "webpack-hot-middleware": "^2.21.2"
+    "webpack": "^4.4.1",
+    "webpack-dev-middleware": "^3.1.0",
+    "webpack-hot-middleware": "^2.21.2",
+    "uglifyjs-webpack-plugin": "^1.2.4"
   },
   "devDependencies": {
     "chai": "^4.1.2",

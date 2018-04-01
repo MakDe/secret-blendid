@@ -11,6 +11,7 @@ const webpack         = require('webpack')
 const webpackManifest = require('./webpackManifest')
 const querystring     = require('querystring')
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 module.exports = function (env) {
 
@@ -61,6 +62,7 @@ module.exports = function (env) {
   }
 
   if (env === 'development') {
+    webpackConfig.mode = 'development'
     webpackConfig.devtool = TASK_CONFIG.javascripts.development.devtool || TASK_CONFIG.javascripts.devtool || false
     webpackConfig.output.pathinfo = true
 
@@ -83,6 +85,7 @@ module.exports = function (env) {
   }
 
   if (env === 'production') {
+    webpackConfig.mode = 'production'
     if (rev) {
       webpackConfig.plugins.push(new webpackManifest(PATH_CONFIG.javascripts.dest, PATH_CONFIG.dest))
     }
@@ -96,7 +99,7 @@ module.exports = function (env) {
 
     webpackConfig.plugins.push(
       new webpack.DefinePlugin(TASK_CONFIG.javascripts.production.definePlugin),
-      new webpack.optimize.UglifyJsPlugin(uglifyConfig),
+      new UglifyJsPlugin(uglifyConfig),
       new webpack.NoEmitOnErrorsPlugin()
     )
   }

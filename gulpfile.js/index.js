@@ -7,6 +7,8 @@
   automatically required below.
 */
 
+process.noDeprecation = true;
+
 const gulp = require('gulp')
 const requireDir = require('require-dir')
 
