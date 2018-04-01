@@ -30,6 +30,7 @@ module.exports = function (env) {
   TASK_CONFIG.javascripts.babelLoader.test = TASK_CONFIG.javascripts.babelLoader.test || new RegExp(`(\\${extensions.join('$|')}$)`)
 
   const webpackConfig = {
+    mode: 'none',
     context: jsSrc,
     entry: TASK_CONFIG.javascripts.entry,
     output: {
