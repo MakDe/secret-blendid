@@ -15,6 +15,41 @@ module.exports = {
     }
   },
 
+  svgSprite: {
+    svgstore: {
+      inlineSvg: true
+    },
+
+    svgmin: {
+      plugins: [{
+        cleanupIDs: {
+          minify: true
+        }
+      }]
+    },
+
+    cheerio: {
+      run: function($) {
+        $('svg').attr('style',  'display:none');
+      },
+
+      parserOptions: {
+        xmlMode: true
+      }
+    }
+  },
+
+  stylesheets: {
+    autoprefixer: ['> 1%', 'last 2 version'],
+    cleancss: {
+      level: {
+        1: {
+          specialComments: false
+        }
+      }
+    }
+  },
+
   browserSync: {
     server: {
       // should match `dest` in

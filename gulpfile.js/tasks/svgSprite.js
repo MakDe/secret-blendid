@@ -3,6 +3,11 @@ if(!TASK_CONFIG.svgSprite) return
 const browserSync = require('browser-sync')
 const gulp        = require('gulp')
 const svgstore    = require('gulp-svgstore')
+const svgmin      = require('gulp-svgmin')
+const cheerio     = require('gulp-cheerio')
+const rename      = require('gulp-rename')
+
+
 const projectPath = require('../lib/projectPath')
 
 const svgSpriteTask = function() {
@@ -13,9 +18,19 @@ const svgSpriteTask = function() {
   }
 
   return gulp.src(settings.src)
+    .pipe(svgmin(function (file) {
+      return TASK_CONFIG.svgSprite.svgmin
+    }))
     .pipe(svgstore(TASK_CONFIG.svgSprite.svgstore))
+    .pipe(cheerio(TASK_CONFIG.svgSprite.cheerio))
+    .pipe(rename('sprite.svg'))
     .pipe(gulp.dest(settings.dest))
     .pipe(browserSync.stream())
+
+  // return gulp.src(settings.src)
+  //   .pipe(svgstore(TASK_CONFIG.svgSprite.svgstore))
+  //   .pipe(gulp.dest(settings.dest))
+  //   .pipe(browserSync.stream())
 }
 
 const { alternateTask = () => svgSpriteTask } = TASK_CONFIG.svgSprite

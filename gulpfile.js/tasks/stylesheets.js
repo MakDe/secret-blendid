@@ -8,9 +8,18 @@ var gulpif       = require('gulp-if')
 var browserSync  = require('browser-sync')
 var sass         = require('gulp-sass')
 var sourcemaps   = require('gulp-sourcemaps')
-var autoprefixer = require('gulp-autoprefixer')
-var cssnano      = require('gulp-cssnano')
+//var autoprefixer = require('gulp-autoprefixer')
+//var cssnano      = require('gulp-cssnano')
 var projectPath  = require('../lib/projectPath')
+
+
+var postcss      = require('gulp-postcss')
+var autoprefixer = require('autoprefixer')
+var mqpacker     = require('css-mqpacker')
+var atImport     = require('postcss-import')
+var inlineSVG    = require('postcss-inline-svg')
+var ofi          = require('postcss-object-fit-images')
+var cleancss     = require('gulp-clean-css')
 
 var sassTask = function () {
 
@@ -26,24 +35,48 @@ var sassTask = function () {
     })
   }
 
-  var cssnanoConfig = TASK_CONFIG.stylesheets.cssnano || {}
-  cssnanoConfig.autoprefixer = false // this should always be false, since we're autoprefixing separately
+  //var cssnanoConfig = TASK_CONFIG.stylesheets.cssnano || {}
+  //cssnanoConfig.autoprefixer = false // this should always be false, since we're autoprefixing separately
+
+  var cleancssConfig = TASK_CONFIG.stylesheets.cleancss || {}
+
+  var postCssPlugins = [
+    autoprefixer({
+      browsers: TASK_CONFIG.stylesheets.autoprefixer
+    }),
+    mqpacker({
+      sort: true
+    }),
+    atImport(),
+    inlineSVG(),
+    ofi()
+  ];
 
   return gulp.src(paths.src)
-    // allow stylelint to check if there are any syntax errors in the code
-    .pipe(stylelint(TASK_CONFIG.stylesheets.stylelint))
-    .on('error', handleErrors)
-    // if fixable, it will push the changes back to the original file and save
-    .pipe(gulp.dest(paths.srcDir))
-    // then proceed with the rest of the stylesheets tasks
     .pipe(gulpif(!global.production, sourcemaps.init()))
     .pipe(sass(TASK_CONFIG.stylesheets.sass))
     .on('error', handleErrors)
-    .pipe(autoprefixer(TASK_CONFIG.stylesheets.autoprefixer))
-    .pipe(gulpif(global.production, cssnano(cssnanoConfig)))
+    .pipe(postcss(postCssPlugins))
+    .pipe(gulpif(global.production, cleancss(cleancssConfig)))
     .pipe(gulpif(!global.production, sourcemaps.write()))
     .pipe(gulp.dest(paths.dest))
     .pipe(browserSync.stream())
+
+  // return gulp.src(paths.src)
+  //   // allow stylelint to check if there are any syntax errors in the code
+  //   .pipe(stylelint(TASK_CONFIG.stylesheets.stylelint))
+  //   .on('error', handleErrors)
+  //   // if fixable, it will push the changes back to the original file and save
+  //   .pipe(gulp.dest(paths.srcDir))
+  //   // then proceed with the rest of the stylesheets tasks
+  //   .pipe(gulpif(!global.production, sourcemaps.init()))
+  //   .pipe(sass(TASK_CONFIG.stylesheets.sass))
+  //   .on('error', handleErrors)
+  //   .pipe(autoprefixer(TASK_CONFIG.stylesheets.autoprefixer))
+  //   .pipe(gulpif(global.production, cssnano(cssnanoConfig)))
+  //   .pipe(gulpif(!global.production, sourcemaps.write()))
+  //   .pipe(gulp.dest(paths.dest))
+  //   .pipe(browserSync.stream())
 }
 
 const { alternateTask = () => sassTask } = TASK_CONFIG.stylesheets
